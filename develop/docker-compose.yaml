@@ -1,0 +1,24 @@
+version: '3'
+
+networks:
+  opencart-dev-tier:
+    driver: bridge
+
+services:
+  web:
+    image: nginx:1.23.2
+    ports:
+      - "80:80"
+    volumes:
+      - "./nginx.conf:/etc/nginx/conf.d/default.conf"
+      - "../upload:/app"
+    networks:
+      - opencart-dev-tier
+  php:
+    build: "./tti-php-fpm/"
+    volumes:
+      - '../upload:/app'
+      -
+    networks:
+      - opencart-dev-tiert
+

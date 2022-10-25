@@ -15,10 +15,12 @@ services:
     networks:
       - opencart-dev-tier
   php:
-    build: "./tti-php-fpm/"
+    image: "ccr.ccs.tencentyun.com/tutiao.info/php:1.0.0"
     volumes:
+      - '../develop/app/php.ini:/usr/local/etc/php/php.ini'
       - '../upload:/app'
-      -
+      - '../develop/app/config.php:/app/config.php'
+      - '../develop/app/admin/config.php:/app/admin/config.php'
     networks:
-      - opencart-dev-tiert
+      - opencart-dev-tier
 

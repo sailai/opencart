@@ -17,8 +17,10 @@ services:
   php:
     image: ccr.ccs.tencentyun.com/tutiao.info/php-dev:1.0.0
     volumes:
+      - '../develop/app/php.ini:/usr/local/etc/php/php.ini'
       - '../upload:/app'
-      #- '../develop/dev.ini:/etc/php8/conf.d/dev.ini'
+      - '../develop/app/config.php:/app/config.php'
+      - '../develop/app/admin/config.php:/app/admin/config.php'
     networks:
       - opencart-dev-tier
 

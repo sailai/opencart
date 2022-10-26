@@ -56,3 +56,6 @@ require_once(DIR_STORAGE . 'vendor/symfony/polyfill-mbstring/bootstrap.php');
 
 // twig/twig
 $autoloader->register('Twig', DIR_STORAGE . 'vendor/twig/twig/src/', true);
+
+// phpmailer/phpmailer
+$autoloader->register('PHPMailer', DIR_STORAGE . 'vendor/phpmailer/phpmailer/src', true)

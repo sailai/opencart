@@ -30,13 +30,9 @@ class ComposerStaticInit723df5bcd9366cc0d09a11e95c1b3994
         ),
         'P' => 
         array (
-            'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
-        ),
-        'M' => 
-        array (
-            'Monolog\\' => 8,
+            'PHPMailer\\PHPMailer\\' => 20,
         ),
         'J' => 
         array (
@@ -71,10 +67,6 @@ class ComposerStaticInit723df5bcd9366cc0d09a11e95c1b3994
         array (
             0 => __DIR__ . '/..' . '/scssphp/scssphp/src',
         ),
-        'Psr\\Log\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/log/src',
-        ),
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-factory/src',
@@ -84,9 +76,9 @@ class ComposerStaticInit723df5bcd9366cc0d09a11e95c1b3994
         array (
             0 => __DIR__ . '/..' . '/psr/http-client/src',
         ),
-        'Monolog\\' => 
+        'PHPMailer\\PHPMailer\\' => 
         array (
-            0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
         'JmesPath\\' => 
         array (

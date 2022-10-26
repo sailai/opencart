@@ -1,6 +1,6 @@
 <?php
 namespace Opencart\System\Library\Mail;
-use PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\PHPMailer
 class Smtp {
 	protected string $to = '';
 	protected string $from = '';
@@ -38,7 +38,7 @@ class Smtp {
 	 */
 	public function send(): bool {
     if (class_exists('PHPMailer\PHPMailer')) {
-      return $this->sendByMailer()
+      return $this->sendByMailer();
     }
 
 		if (is_array($this->to)) {
@@ -282,7 +282,7 @@ class Smtp {
 	}
 
   public function sendByMailer(): bool {
-    $mailer = new PHPMailer()
+    $mailer = new PHPMailer();
     try {
       $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
       $mail->isSMTP();                                            //Send using SMTP
@@ -318,13 +318,16 @@ class Smtp {
       }
 
       //Content
-      //$mail->isHTML(true);                                        //Set email format to HTML
       $mail->Subject = $this->subject;
       if (!$this->html) {
-
+        $mail->Body = $this->text;
+      } else {
+        $mail->isHTML(true);                                        //Set email format to HTML
+        $mail->Body = $this->html;
+        if ($this->text) {
+          $mail->AltBody = $this->text;
+        }
       }
-      $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
-      //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
       $mail->send();
       echo 'Message has been sent';

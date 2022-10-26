@@ -1,5 +1,4 @@
 version: '3'
-
 networks:
   opencart-dev-tier:
     driver: bridge
@@ -21,6 +20,8 @@ services:
       - '../upload:/app'
       - '../develop/app/config.php:/app/config.php'
       - '../develop/app/admin/config.php:/app/admin/config.php'
+    ports:
+      - 9000:9000
     networks:
       - opencart-dev-tier
 

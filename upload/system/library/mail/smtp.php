@@ -1,5 +1,6 @@
 <?php
 namespace Opencart\System\Library\Mail;
+use PHPMailer\PHPMailer;
 class Smtp {
 	protected string $to = '';
 	protected string $from = '';
@@ -36,6 +37,10 @@ class Smtp {
 	 * @return    bool
 	 */
 	public function send(): bool {
+    if (class_exists('PHPMailer\PHPMailer')) {
+      return $this->sendByMailer()
+    }
+
 		if (is_array($this->to)) {
 			$to = implode(',', $this->to);
 		} else {
@@ -275,4 +280,56 @@ class Smtp {
 
 		return $reply;
 	}
+
+  public function sendByMailer(): bool {
+    $mailer = new PHPMailer()
+    try {
+      $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+      $mail->isSMTP();                                            //Send using SMTP
+      $mail->Host       = $this->smtp_hostname;                  //Set the SMTP server to send through
+      $mail->Username   = $this->smtp_username;          //SMTP username
+      $mail->Password   = $this->smtp_password;                  //SMTP password
+
+      $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
+      $mail->CharSet       = PHPMailer::CHARSET_UTF8;
+      $mail->CharSet       = 'UTF-8';
+      $mail->ContentType = 'text/plain; charset=UTF-8';
+      $mail->Encoding   = PHPMailer::ENCODING_BASE64;
+      //$mail->Encoding   = '8bit';
+      $mail->Port       = $this->smtp_port;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+
+      //Recipients
+      $mail->setFrom($this->smtp_username, 'fromName');
+      if (is_array($this->to)) {
+        foreach($this->to as $to) {
+          $mail->addAddress($to, 'toName');
+        }
+      } else {
+        $mail->addAddress($this->to, 'toName');
+      }
+      //$mail->addAddress('ellen@example.com');                   //Name is optional
+      //$mail->addReplyTo('info@example.com', 'Information');
+      //$mail->addCC('cc@example.com');
+      //$mail->addBCC('bcc@example.com');
+
+      //Attachments
+      foreach ($this->attachments as $attachment) {
+        $mail->addAttachment($attachment);                             //Add attachments
+      }
+
+      //Content
+      //$mail->isHTML(true);                                        //Set email format to HTML
+      $mail->Subject = $this->subject;
+      if (!$this->html) {
+
+      }
+      $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
+      //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+
+      $mail->send();
+      echo 'Message has been sent';
+    } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    }
+  }
 }

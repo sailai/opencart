@@ -10,16 +10,17 @@ services:
       - "80:80"
     volumes:
       - "./nginx.conf:/etc/nginx/conf.d/default.conf"
-      - "../upload:/app"
+      - "../src:/app"
     networks:
       - opencart-dev-tier
   php:
     image: ccr.ccs.tencentyun.com/tutiao.info/php-dev:1.0.0
     volumes:
+      - '../src:/app'
       - '../develop/app/php.ini:/usr/local/etc/php/php.ini'
-      - '../upload:/app'
       - '../develop/app/config.php:/app/config.php'
       - '../develop/app/admin/config.php:/app/admin/config.php'
+      - '~/tmp/tutiao/opencart-storage:/app/system/storage'
     ports:
       - 9000:9000
     networks:

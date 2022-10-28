@@ -1,6 +1,6 @@
 <?php
 namespace Opencart\System\Library\Mail;
-use PHPMailer\PHPMailer\PHPMailer
+use PHPMailer\PHPMailer\PHPMailer;
 class Smtp {
 	protected string $to = '';
 	protected string $from = '';
@@ -17,6 +17,7 @@ class Smtp {
 	protected int $smtp_timeout = 5;
 	protected int $max_attempts = 3;
 	protected bool $verp = false;
+  protected bool $usePHPMailer = true;
 
 	/**
 	 * Constructor
@@ -37,7 +38,7 @@ class Smtp {
 	 * @return    bool
 	 */
 	public function send(): bool {
-    if (class_exists('PHPMailer\PHPMailer')) {
+    if ($this->usePHPMailer) {
       return $this->sendByMailer();
     }
 
@@ -283,56 +284,52 @@ class Smtp {
 
   public function sendByMailer(): bool {
     $mailer = new PHPMailer();
-    try {
-      $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-      $mail->isSMTP();                                            //Send using SMTP
-      $mail->Host       = $this->smtp_hostname;                  //Set the SMTP server to send through
-      $mail->Username   = $this->smtp_username;          //SMTP username
-      $mail->Password   = $this->smtp_password;                  //SMTP password
+    $mailer->SMTPAuth   = true;                                   //Enable SMTP authentication
+    $mailer->isSMTP();                                            //Send using SMTP
+    $mailer->Host       = $this->smtp_hostname;                  //Set the SMTP server to send through
+    $mailer->Username   = $this->smtp_username;          //SMTP username
+    $mailer->Password   = $this->smtp_password;                  //SMTP password
 
-      $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
-      $mail->CharSet       = PHPMailer::CHARSET_UTF8;
-      $mail->CharSet       = 'UTF-8';
-      $mail->ContentType = 'text/plain; charset=UTF-8';
-      $mail->Encoding   = PHPMailer::ENCODING_BASE64;
-      //$mail->Encoding   = '8bit';
-      $mail->Port       = $this->smtp_port;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+    $mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
+    $mailer->CharSet       = PHPMailer::CHARSET_UTF8;
+    $mailer->CharSet       = 'UTF-8';
+    $mailer->ContentType = 'text/plain; charset=UTF-8';
+    $mailer->Encoding   = PHPMailer::ENCODING_BASE64;
+    //$mail->Encoding   = '8bit';
+    $mailer->Port       = $this->smtp_port;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
-      //Recipients
-      $mail->setFrom($this->smtp_username, 'fromName');
-      if (is_array($this->to)) {
-        foreach($this->to as $to) {
-          $mail->addAddress($to, 'toName');
-        }
-      } else {
-        $mail->addAddress($this->to, 'toName');
+    //Recipients
+    $mailer->setFrom($this->smtp_username);
+    if (is_array($this->to)) {
+      foreach($this->to as $to) {
+        $mailer->addAddress($to);
       }
-      //$mail->addAddress('ellen@example.com');                   //Name is optional
-      //$mail->addReplyTo('info@example.com', 'Information');
-      //$mail->addCC('cc@example.com');
-      //$mail->addBCC('bcc@example.com');
-
-      //Attachments
-      foreach ($this->attachments as $attachment) {
-        $mail->addAttachment($attachment);                             //Add attachments
-      }
-
-      //Content
-      $mail->Subject = $this->subject;
-      if (!$this->html) {
-        $mail->Body = $this->text;
-      } else {
-        $mail->isHTML(true);                                        //Set email format to HTML
-        $mail->Body = $this->html;
-        if ($this->text) {
-          $mail->AltBody = $this->text;
-        }
-      }
-
-      $mail->send();
-      echo 'Message has been sent';
-    } catch (Exception $e) {
-        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    } else {
+      $mailer->addAddress($this->to);
     }
+    //$mail->addAddress('ellen@example.com');                   //Name is optional
+    //$mail->addReplyTo('info@example.com', 'Information');
+    //$mail->addCC('cc@example.com');
+    //$mail->addBCC('bcc@example.com');
+
+    //Attachments
+    foreach ($this->attachments as $attachment) {
+      $mailer->addAttachment($attachment);                             //Add attachments
+    }
+
+    //Content
+    $mailer->Subject = $this->subject;
+    if (!$this->html) {
+      $mailer->Body = $this->text;
+    } else {
+      $mailer->isHTML(true);                                        //Set email format to HTML
+      $mailer->Body = $this->html;
+      if ($this->text) {
+        $mailer->AltBody = $this->text;
+      }
+    }
+
+    $mailer->send();
+    return true;
   }
 }
